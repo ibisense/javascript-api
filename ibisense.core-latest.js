@@ -94,6 +94,7 @@ var ibisense = (function () {
                 }
                 xdr.send();
             } else {
+
                 try {
                     var xhr = new XMLHttpRequest();
                     xhr.open("GET", url + params, true);
@@ -114,7 +115,7 @@ var ibisense = (function () {
                     }
                     xhr.send();
                 } catch(e) {
-                    console.log(e.message);
+                    throw e;
                 }
             }
         },
@@ -181,6 +182,7 @@ var ibisense = (function () {
                     xhr.send(data);
                 } catch(e) {
                     log(e.message);
+                    throw e;
                 }
             }
         },

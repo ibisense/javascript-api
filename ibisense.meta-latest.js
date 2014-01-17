@@ -113,6 +113,7 @@ var ibisense = (function(parent) {
                     xhr.send();
                 } catch(e) {
                     console.log(e.message);
+                    throw e;
                 }
             }
         },
@@ -177,6 +178,7 @@ var ibisense = (function(parent) {
                     xhr.send(data);
                 } catch(e) {
                     log(e.message);
+                    throw e;
                 }
             }
         },
