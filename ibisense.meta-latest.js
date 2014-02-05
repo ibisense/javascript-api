@@ -70,7 +70,8 @@ var ibisense = (function(parent) {
                         } catch (err) {
 
                         } finally {
-                            success(data, status);
+                            if(success) success(data, status);
+                            if(always) always();
                         }
                     }
                 }
@@ -84,11 +85,13 @@ var ibisense = (function(parent) {
                         console.log(err);
                     } finally {
                         if (failure) failure(status);
+                        if(always) always();
                     }
                 }
 
                 xdr.ontimeout = function() {
                     if (failure) failure(500);
+                    if(always) always();
                 }
                 xdr.send();
             } else {
@@ -134,7 +137,8 @@ var ibisense = (function(parent) {
                         } catch (err) {
                             console.log(err);
                         } finally {
-                            success(data, status);
+                            if(success) success(data, status);
+                            if(always) always();
                         }
                     }
                 }
@@ -149,10 +153,12 @@ var ibisense = (function(parent) {
                         console.log(err);
                     } finally {
                         if (failure) failure(status);
+                        if(always) always();
                     }
                 }
                 xdr.ontimeout = function() {
                     if (failure) failure(500);
+                    if(always) always();
                 }
                 xdr.send(data);
             } else {
