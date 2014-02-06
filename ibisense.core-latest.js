@@ -1,6 +1,6 @@
 //-------------------------------//
 //    Ibisense JS API library    //
-//        version 1.3.5          //
+//        version 1.3.6          //
 //     (c) 2013 Ibisense Oy      //
 //-------------------------------//
 
@@ -40,7 +40,7 @@ var ibisense = (function () {
                     window.console.log(msg);
                 else 
                     console.log(msg);
-            } catch(err) { alert(err); }
+            } catch(err) { throw err; }
         },
         
         jsonGet = function (url, data, success, failure, always, method) {
@@ -51,14 +51,14 @@ var ibisense = (function () {
                 url.indexOf("?") != -1)?'&':'?')+key+'='+data[key];
             }
 
-
-
             if (((typeof navigator) != "undefined")&&navigator.userAgent && navigator.userAgent.indexOf("MSIE") != -1 && 
                 window.XDomainRequest) {
                 var xdr = new XDomainRequest();
                 xdr.open("GET", url+params);
+                
+                xdr.timeout = 20000;
 
-		/*Really important, otherwise request will hang pending */                
+                /*Really important, otherwise request will hang pending */                
                 xdr.onprogress = function() {}
 
                 xdr.onload = function() {
@@ -94,8 +94,10 @@ var ibisense = (function () {
                 xdr.ontimeout = function() {
                     if (failure) failure(500);
                     if(always) always();
-               }
+                }
+                
                 xdr.send();
+                
             } else {
 
                 try {
@@ -132,29 +134,31 @@ var ibisense = (function () {
                     if (success) {
                         var data = {};
                         var status = 200;
+
                         try {
                             var jsonObj = JSON.parse(xdr.responseText);
                             data = jsonObj.data || {};
                             status = jsonObj.status;
-                        } catch (err) {
-                            console.log(err);
+                        } catch (e) {
+                            throw e;
                         } finally {
                             if(success) success(data, status);
                             if(always) always();
                         }
                     }
                 }
+                
+                xdr.timeout = 20000;
 
                 xdr.onprogress = function () {}
 
                 xdr.onerror = function() {
                     var status = 0;
                     try {
-                        console.log(xdr.responseText);
                         var jsonObj = JSON.parse(xdr.responseText);
                         status = jsonObj.status;
                     } catch(err) {
-                        console.log(err);
+                        throw err;
                     } finally {
                         if (failure) failure(status);
                         if(always) always();
@@ -164,6 +168,7 @@ var ibisense = (function () {
                     if (failure) failure(500);
                     if(always) always();
                 }
+                
                 xdr.send(data);
             } else {
 
@@ -187,7 +192,6 @@ var ibisense = (function () {
                     }
                     xhr.send(data);
                 } catch(e) {
-                    log(e.message);
                     throw e;
                 }
             }
