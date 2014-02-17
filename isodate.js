@@ -1,27 +1,24 @@
-if ( !Date.prototype.toISOString ) {
+( function() {
 
-    ( function() {
-
-        function pad(number) {
-            var r = String(number);
-            if ( r.length === 1 ) {
-                r = '0' + r;
-            }
-            return r;
+    function pad(number) {
+        var r = String(number);
+        if ( r.length === 1 ) {
+            r = '0' + r;
         }
+        return r;
+    }
 
-        Date.prototype.toISOString = function() {
-            return this.getUTCFullYear()
-                + '-' + pad( this.getUTCMonth() + 1 )
-                + '-' + pad( this.getUTCDate() )
-                + 'T' + pad( this.getUTCHours() )
-                + ':' + pad( this.getUTCMinutes() )
-                + ':' + pad( this.getUTCSeconds() )
-                + '.' + String( (this.getUTCMilliseconds()/1000).toFixed(3) ).slice( 2, 5 )
-                + 'Z';
-        };
-    }() );
-}
+    Date.prototype.toISOString = function() {
+        return this.getUTCFullYear()
+            + '-' + pad( this.getUTCMonth() + 1 )
+            + '-' + pad( this.getUTCDate() )
+            + 'T' + pad( this.getUTCHours() )
+            + ':' + pad( this.getUTCMinutes() )
+            + ':' + pad( this.getUTCSeconds() )
+            + '.' + String( (this.getUTCMilliseconds()/1000).toFixed(3) ).slice( 2, 5 )
+            + 'Z';
+    };
+}() );
 
 (function (Date, undefined) {
     var origParse = Date.parse, numericKeys = [ 1, 4, 5, 6, 7, 10, 11 ];
