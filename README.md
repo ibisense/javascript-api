@@ -13,6 +13,6 @@ When using the library in browsers please include the two following lines (in th
 If the library will be used in IE browsers, some json polyfills would be needed. You can use 
 either **json2.js** or **json3.js** libraries:
 ```
-<script src="://cdnjs.cloudflare.com/ajax/libs/json3/3.3.0/json3.min.js" />
+<script src="//cdnjs.cloudflare.com/ajax/libs/json3/3.3.0/json3.min.js" />
 ```
 Include this library before **ibisense.core-latest.js**.
