@@ -446,7 +446,9 @@ var ibisense = (function () {
              * 
              * Creates new sensor. Optionally, the 
              * class instance can be initialized 
-             * by passing map containing appropriate fields. Note the sensor is not stored in Ibisense cloud at this point (to add or update sensor using this object in the cloud, please refer to {@link ibisense.sensors.add} and {@link ibisense.sensors.update} methods)
+             * by passing map containing appropriate fields. Note the sensor is not stored in 
+             * Ibisense cloud at this point (to add or update sensor using this object in the cloud, 
+             * please refer to {@link ibisense.sensors.add} and {@link ibisense.sensors.update} methods)
              *
              * @param {SensorFields} parameters - optional map containing 
              * values which will be used to initialize class instance.
@@ -3620,8 +3622,8 @@ var ibisense = (function () {
 
                     if (params["start"] && params["end"]) {
                         try {
-                            query["start"] = new Date.parse(params["start"]).toISOString();
-                            query["end"] = new Date.parse(params["end"]).toISOString();
+                            query["start"] = new Date(params["start"]).toISOString();
+                            query["end"] = new Date(params["end"]).toISOString();
                         } catch (e) {
                             delete query["start"];
                             delete query["end"];
