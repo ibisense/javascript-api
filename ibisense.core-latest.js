@@ -1,6 +1,6 @@
 //-------------------------------//
 //    Ibisense JS API library    //
-//        version 1.3.6          //
+//        version 1.3.7          //
 //     (c) 2013 Ibisense Oy      //
 //-------------------------------//
 
@@ -2155,17 +2155,17 @@ var ibisense = (function () {
                             sensor.setLocation(s.location.latitude, s.location.longitude);
 
                             try {
-                                sensor.setIndoorLocation(jsonObj.indoor_location.x, 
-                                jsonObj.indoor_location.y, 
-                                jsonObj.indoor_location.id);
+                                sensor.setIndoorLocation(s.indoor_location.x, 
+                                s.indoor_location.y, 
+                                s.indoor_location.id);
                             } catch (err) {
                                 sensor.setIndoorLocation(0, 0, 0);
                             }
 
-                            sensor.setOwner(jsonObj.owner_name);
-                            sensor.setActivated(jsonObj.activated);
-                            sensor.setActive(jsonObj.active);
-                            sensor.setAccessType(jsonObj.access);
+                            sensor.setOwner(s.owner_name);
+                            sensor.setActivated(s.activated);
+                            sensor.setActive(s.active);
+                            sensor.setAccessType(s.access);
                             
                             for (var key in s.attributes) {
                                 sensor.addAttribute(key, s.attributes[key]);
@@ -2214,17 +2214,17 @@ var ibisense = (function () {
                             sensor.setLocation(s.location.latitude, s.location.longitude);
 
                             try {
-                                sensor.setIndoorLocation(jsonObj.indoor_location.x, 
-                                jsonObj.indoor_location.y, 
-                                jsonObj.indoor_location.id);
+                                sensor.setIndoorLocation(s.indoor_location.x, 
+                                s.indoor_location.y, 
+                                s.indoor_location.id);
                             } catch (err) {
                                 sensor.setIndoorLocation(0, 0, "");
                             }
 
-                            sensor.setOwner(jsonObj.owner_name);
-                            sensor.setActivated(jsonObj.activated);
-                            sensor.setActive(jsonObj.active);
-                            sensor.setAccessType(jsonObj.access);
+                            sensor.setOwner(s.owner_name);
+                            sensor.setActivated(s.activated);
+                            sensor.setActive(s.active);
+                            sensor.setAccessType(s.access);
                             
                             for (var key in s.attributes) {
                                 sensor.addAttribute(key, s.attributes[key]);
@@ -2302,9 +2302,9 @@ var ibisense = (function () {
 
 
                             try {
-                                sensor.setIndoorLocation(jsonObj.indoor_location.x, 
-                                jsonObj.indoor_location.y, 
-                                jsonObj.indoor_location.id);
+                                sensor.setIndoorLocation(s.indoor_location.x, 
+                                s.indoor_location.y, 
+                                s.indoor_location.id);
                             } catch (err) {
                                 sensor.setIndoorLocation(0, 0, "");
                             }
@@ -2598,17 +2598,17 @@ var ibisense = (function () {
                             sensor.setLocation(s.location.latitude, s.location.longitude);
 
                             try {
-                                sensor.setIndoorLocation(jsonObj.indoor_location.x, 
-                                jsonObj.indoor_location.y, 
-                                jsonObj.indoor_location.id);
+                                sensor.setIndoorLocation(s.indoor_location.x, 
+                                s.indoor_location.y, 
+                                s.indoor_location.id);
                             } catch (err) {
                                sensor.setIndoorLocation(0, 0, "");
                             }
 
-                            sensor.setOwner(jsonObj.owner_name);
-                            sensor.setActivated(jsonObj.activated);
-                            sensor.setActive(jsonObj.active);
-                            sensor.setAccessType(jsonObj.access);
+                            sensor.setOwner(s.owner_name);
+                            sensor.setActivated(s.activated);
+                            sensor.setActive(s.active);
+                            sensor.setAccessType(s.access);
                             
                             for (var key in s.attributes) {
                                 sensor.addAttribute(key, s.attributes[key]);
@@ -3812,5 +3812,3 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = ibisense;
     root.ibisense = ibisense;
 }
-
-
