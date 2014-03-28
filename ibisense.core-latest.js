@@ -3,8 +3,6 @@
 //        version 1.3.7          //
 //     (c) 2013 Ibisense Oy      //
 //-------------------------------//
-//mikko was here
-
 
 /**
 * @ignore
