@@ -1,6 +1,6 @@
 //-------------------------------//
 //    Ibisense JS API library    //
-//        version 1.3.7          //
+//        version 1.3.8          //
 //     (c) 2013 Ibisense Oy      //
 //-------------------------------//
 
@@ -480,7 +480,7 @@ var ibisense = (function () {
                     this._name         = parameters['name'] || ''; 
                     this._description  = parameters['description'] || '';
                     this._accessType   = (parameters['accessType'] &&
-                                        parameters['accessType'] === 'owner-only') ? 'public' : 'owner-only';
+                                        parameters['accessType'] === 'public') ? 'public' : 'owner-only';
                     this._latitude     = parameters['latitude'] || 0.0;
                     this._longitude    = parameters['longitude'] || 0.0;
 
