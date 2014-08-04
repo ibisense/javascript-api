@@ -1,6 +1,6 @@
 //-------------------------------//
 //    Ibisense JS API library    //
-//        version 1.3.8          //
+//        version 1.3.9          //
 //     (c) 2013 Ibisense Oy      //
 //-------------------------------//
 
@@ -952,13 +952,15 @@ var ibisense = (function () {
                     this._name         = parameters['name'] || ''; 
                     this._description  = parameters['description'] || '';
                     this._unit         = parameters['unit'] || '';
+                    this._formula      = parameters['formula'] || 'x';
                     this._abbreviation = parameters['abbreviation'] || '';
                     this._attributes   = parameters['attributes'] || {};
                 } else {
                     this._cuid         = "";
                     this._name         = "";
                     this._description  = "";
-                    this._unit    = "";
+                    this._unit         = "";
+                    this._formula      = "x";
                     this._abbreviation = "";
                     this._attributes   = {};
                 }
@@ -1035,6 +1037,29 @@ var ibisense = (function () {
                 this.name = function () {
                     return this._name;
                 };
+
+                /**
+                 * Gets channel measurement conversion formula
+                 * @function formula
+                 * @type {String}
+                 * @memberOf ibisense.models.Channel
+                 * @instance
+                 */
+                this.formula = function() {
+                    return this._formula;
+                }
+
+                /**
+                 * Sets channel measurement conversion formula
+                 * @function setFormula
+                 * @type {String}
+                 * @memberOf ibisense.models.Channel
+                 * @instance
+                 */
+
+                this.setFormula = function(formula) {
+                    this._formula = formula;
+                }
                 
                 /**
                  * Sets description of this channel
@@ -1173,6 +1198,7 @@ var ibisense = (function () {
                         "name": this._name,
                         "description": this._description,
                         "unit": this._unit,
+                        "formula": this._formula,
                         "abbreviation": this._abbreviation, 
                         "attributes": this._attributes
                     };
@@ -2690,6 +2716,7 @@ var ibisense = (function () {
                         channel.setName(jsonObj.name);
                         channel.setDescription(jsonObj.description);
                         channel.setUnit(jsonObj.unit);
+                        channel.setFormula(jsonObj.formula);
                         channel.setAbbreviation(jsonObj.abbreviation);
                         
                         for (var key in jsonObj.attributes) {
@@ -2769,6 +2796,7 @@ var ibisense = (function () {
                             channel.setName(c.name);
                             channel.setDescription(c.description);
                             channel.setUnit(c.unit);
+                            channel.setFormula(c.formula);
                             channel.setAbbreviation(c.abbreviation);
                             
                             for (var key in c.attributes) {
@@ -2849,6 +2877,7 @@ var ibisense = (function () {
                             channel.setName(c.name);
                             channel.setDescription(c.description);
                             channel.setUnit(c.unit);
+                            channel.setFormula(c.formula);
                             channel.setAbbreviation(c.abbreviation);
                             
                             for (var key in c.attributes) {
@@ -3058,6 +3087,7 @@ var ibisense = (function () {
                         channel.setName(jsonObj.name);
                         channel.setDescription(jsonObj.description);
                         channel.setUnit(jsonObj.unit);
+                        channel.setFormula(jsonObj.formula);
                         channel.setAbbreviation(jsonObj.abbreviation);
                         
                         for (var key in jsonObj.attributes) {
@@ -3176,6 +3206,7 @@ var ibisense = (function () {
                             channel.setName(c.name);
                             channel.setDescription(c.description);
                             channel.setUnit(c.unit);
+                            channel.setFormula(c.formula);
                             channel.setAbbreviation(c.abbreviation);
                             
                             for (var key in c.attributes) {
