@@ -1,6 +1,6 @@
 //-------------------------------//
 //    Ibisense JS API library    //
-//        version 1.3.9          //
+//        version 1.4.0          //
 //     (c) 2013 Ibisense Oy      //
 //-------------------------------//
 
@@ -2215,7 +2215,7 @@ var ibisense = (function () {
             },
 
             getByLocation: function (options, success, error, always, private_only) {
-                if (!private_only) private_only = false;
+                if (typeof(private_only) === "function" || private_only === undefined || typeof(private_only) === "object") private_only = true;
 
                 if (!options) {
                     throw "Malformed options";
@@ -2311,7 +2311,7 @@ var ibisense = (function () {
               
             getByAttribute: function (key, value, success, error, always, private_only) {               
                 var filter = new ibisense.models.Filter({'comparator': 'equal', 'key': key, 'value': value})
-                if (!private_only) private_only = false;
+                if (typeof(private_only) === "function" || private_only === undefined || typeof(private_only) === "object") private_only = true;
                 httprequest({
                     type:    "POST",
                     url:     ApiBaseURL + "get/" + ApiKey + "/sensor/filter/?only_private=" + private_only,
@@ -2608,7 +2608,7 @@ var ibisense = (function () {
 
             list: function (success, error, always, private_only) {
 
-                if (!private_only) private_only = false; 
+                if (typeof(private_only) === "function" || private_only === undefined || typeof(private_only) === "object") private_only = true;
                 httprequest({
                     url:     ApiBaseURL + "get/" + ApiKey + "/sensor/?only_private=" + private_only,
                     final:   always,
@@ -2858,7 +2858,7 @@ var ibisense = (function () {
              */
               
             getByAttribute: function (key, value, success, error, always, private_only) {
-                if (!private_only) private_only = false;
+                if (typeof(private_only) === "function" || private_only === undefined || typeof(private_only) === "object") private_only = true;
                 var filter = new ibisense.models.Filter({'comparator': 'equal', 'key': key, 'value': value});
                 
                 httprequest({
@@ -3530,7 +3530,7 @@ var ibisense = (function () {
             
             list: function (success, error, always, private_only) {
 
-                if (!private_only) private_only = false; 
+                if (typeof(private_only) === "function" || private_only === undefined || typeof(private_only) === "object") private_only = true;
 
                 console.log("listing all sensors");
 
