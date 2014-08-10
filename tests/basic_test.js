@@ -302,6 +302,44 @@ describe('Add and get with rollups:', function() {
 			return dfd.promise;
 		}
 
+		var aggregate = function(datapoints) {
+			var aggregated_datapoints = [];
+
+			var accumulator = 0;
+			var pivot = null;
+			var interval = 10;
+
+			_.each(datapoints, function(dp, i) {
+
+				if (( (i + 1) % interval) == 1 ) {
+					pivot = dp.timestamp();
+				}
+
+				if (( (i + 1) % interval) == 0) {
+					accumulator += dp.value();
+					aggregated_datapoints.push(
+						new ibisense.models.DataPoint({
+							date: pivot, 
+							value: accumulator / interval
+						})
+					);
+					accumulator = 0;
+				} else {
+					accumulator += dp.value();
+				}
+
+				if (datapoints.length - 1 == i) {
+					aggregated_datapoints.push(
+						new ibisense.models.DataPoint({
+							date: pivot, 
+							value: accumulator
+						})
+					);
+				}
+			});
+			return aggregated_datapoints;
+		}
+
 		var deleteSensor = function(suid) {
 			ibisense.sensors.remove(suid);
 		}
@@ -314,21 +352,31 @@ describe('Add and get with rollups:', function() {
 		var end   = new Date().getTime();
 		var start = end - num * step;
 		var original_datapoints = prepareData(start, end + 1, step);
+		var aggregated_datapoints = aggregate(original_datapoints);
 		var propagation_delay   = 5000; // wait 5 seconds before attempting to read out data
 		var func  = "avg";
 		var ival  = "10sec"; 
 
 		when(createNewSensor(newsensor)).then(function(sensor) {
 			newsensor = sensor;
-			when(createNewChannel(newsensor.suid(), newchannel)).then(function(created_channel) {
+			when(createNewChannel(newsensor.suid(), newchannel))
+				.then(function(created_channel) {
 				newchannel = created_channel;
 				cuid = newchannel.cuid();
-				when(addDatapoints(cuid, original_datapoints)).then(function(received_datapoints) {
+				when(addDatapoints(cuid, original_datapoints))
+					.then(function(received_datapoints) {
 					setTimeout(function() {
-						when(getAndCompareDatapoints(cuid, start, end, func, ival, original_datapoints)).then(
-						function(received_datapoints) {
+						when(getAndCompareDatapoints(cuid, start, end, func, ival, original_datapoints))
+						.then(function(received_datapoints) {
 							assert.equal(received_datapoints.length, Math.ceil(original_datapoints.length / 10));
 							deleteSensor(newsensor.suid());
+
+							_.each(received_datapoints, function(dp, i) {
+								var dpa = aggregated_datapoints[i];
+								assert.equal(dp.timestampMs(), dpa.timestampMs());
+								assert.equal(dp.value(), dpa.value());
+							});
+
 							done();
 						}, function(error) {
 							deleteSensor(newsensor.suid());
