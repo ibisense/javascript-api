@@ -1,6 +1,6 @@
 //-------------------------------//
 //    Ibisense JS API library    //
-//        version 1.4.0          //
+//        version 1.4.1          //
 //     (c) 2013 Ibisense Oy      //
 //-------------------------------//
 
@@ -185,13 +185,16 @@ var ibisense = (function () {
                                     success(jsonObj.data, xhr.status);
                                 }
                             } else {
-                                if (failure) failure(xhr.status);
+                                if (failure) {
+                                    failure(xhr.status);
+                                }
                             }
                             if (always) always();
                         }
                     }
                     xhr.send(data);
                 } catch(e) {
+                    console.log(e);
                     throw e;
                 }
             }
@@ -228,11 +231,22 @@ var ibisense = (function () {
      */
     api = {
         
-        baseurl: ApiBaseURL,
-
-        apiKey: function() {
-            return ApiKey;
+        baseurl: function(url) {
+            if (url === undefined) {
+                return ApiBaseURL;    
+            } else {
+                ApiBaseURL = url;
+            }
         },
+
+        apiKey: function(key) {
+            if (key === undefined) {
+                return ApiKey;  
+            } else {
+                ApiKey = key;
+            }
+        },
+
         /**
          * Sets an API key for access to Ibisense cloud.
          * The API key must be set prior to any other API method invocation.
@@ -484,9 +498,9 @@ var ibisense = (function () {
                     this._latitude     = parameters['latitude'] || 0.0;
                     this._longitude    = parameters['longitude'] || 0.0;
 
-                    this._indor_x      = parameters['indoor_x_coord'] || 0.0;
-                    this._indor_y      = parameters['indoor_y_coord'] || 0.0;
-                    this._indor_id     = parameters['indoor_id'] || 0.0;
+                    this._indoor_x      = parameters['indoor_x_coord'] || 0.0;
+                    this._indoor_y      = parameters['indoor_y_coord'] || 0.0;
+                    this._indoor_id     = parameters['indoor_id'] || 0.0;
 
                     this._attributes   = parameters['attributes'] || {};
                     this._channels     = parameters['channels'] || [];
@@ -497,9 +511,9 @@ var ibisense = (function () {
                     this._accessType  = "public";
                     this._latitude    = 0.0;
                     this._longitude   = 0.0;
-                    this._indor_x     = 0.0;
-                    this._indor_y     = 0.0;
-                    this._indor_id    = "";
+                    this._indoor_x     = 0.0;
+                    this._indoor_y     = 0.0;
+                    this._indoor_id    = "";
                     this._attributes  = {};
                     this._channels    = []
                 }
@@ -747,9 +761,9 @@ var ibisense = (function () {
                     if (isNaN(x) || isNaN(y)) {
                         throw "Invalid number";
                     }
-                    this._indor_x = x;
-                    this._indor_y = y;
-                    this._indor_id = id;
+                    this._indoor_x = x;
+                    this._indoor_y = y;
+                    this._indoor_id = id;
                 };
 
                 /**
@@ -771,9 +785,9 @@ var ibisense = (function () {
 
                 this.indoor_location = function () {
                     return { 
-                        x: this._indor_x, 
-                        y: this._indor_y, 
-                        id: this._indor_id
+                        x: this._indoor_x, 
+                        y: this._indoor_y, 
+                        id: this._indoor_id
                     };
                 };
 
@@ -2481,6 +2495,7 @@ var ibisense = (function () {
                     data:    sensorObj.toJson(),
                     final:   always,
                     success: function (jsonObj, status) {
+
                         var sensor = new ibisense.models.Sensor();
 
                         sensor.setSUID(jsonObj.SUID);
@@ -2505,7 +2520,6 @@ var ibisense = (function () {
                             sensor.addAttribute(key, jsonObj.attributes[key]);
                         }
                         
-
                         for (var i = 0; i < jsonObj.channels.length; i++) {
                             if (jsonObj.channels[i]) sensor.addChannel(jsonObj.channels[i]);
                         }
