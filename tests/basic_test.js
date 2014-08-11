@@ -14,6 +14,7 @@ var _        = require('underscore');
 
 var url      = process.env.URL;
 var key      = process.env.API_KEY;
+
 assert.ok(url, "Missing URL of your deployment");
 assert.ok(process.env.OWNER, "Missing OWNER string");
 
@@ -171,7 +172,7 @@ describe('Add and get datapoitns:', function() {
 			return dfd.promise;
 		}
 
-		var getAndCompareDatapoints = function(cuid, start, end, original_datapoints) {
+		var queryDatapoints = function(cuid, start, end) {
 			var dfd = when.defer();
 			var query = {
 				cuid: cuid,
@@ -209,7 +210,7 @@ describe('Add and get datapoitns:', function() {
 				cuid = newchannel.cuid();
 				when(addDatapoints(cuid, original_datapoints)).then(function(received_datapoints) {
 					setTimeout(function() {
-						when(getAndCompareDatapoints(cuid, start, end, original_datapoints)).then(
+						when(queryDatapoints(cuid, start, end)).then(
 						function(received_datapoints) {
 							assert.equal(received_datapoints.length, original_datapoints.length);
 							_.each(received_datapoints, function(dp, i) {
@@ -283,7 +284,7 @@ describe('Add and get with rollups:', function() {
 			return dfd.promise;
 		}
 
-		var getAndCompareDatapoints = function(cuid, start, end, func, interval, original_datapoints) {
+		var queryDatapoints = function(cuid, start, end, func, interval) {
 			var dfd = when.defer();
 			var query = {
 				cuid: cuid,
@@ -366,7 +367,7 @@ describe('Add and get with rollups:', function() {
 				when(addDatapoints(cuid, original_datapoints))
 					.then(function(received_datapoints) {
 					setTimeout(function() {
-						when(getAndCompareDatapoints(cuid, start, end, func, ival, original_datapoints))
+						when(queryDatapoints(cuid, start, end, func, ival))
 						.then(function(received_datapoints) {
 							assert.equal(received_datapoints.length, Math.ceil(original_datapoints.length / 10));
 							deleteSensor(newsensor.suid());
@@ -443,7 +444,7 @@ describe('Add and get with rollups:', function() {
 			return dfd.promise;
 		}
 
-		var getAndCompareDatapoints = function(cuid, start, end, func, interval, original_datapoints) {
+		var queryDatapoints = function(cuid, start, end, func, interval) {
 			var dfd = when.defer();
 			var query = {
 				cuid: cuid,
@@ -526,7 +527,7 @@ describe('Add and get with rollups:', function() {
 				when(addDatapoints(cuid, original_datapoints))
 					.then(function(received_datapoints) {
 					setTimeout(function() {
-						when(getAndCompareDatapoints(cuid, start, end, func, ival, original_datapoints))
+						when(queryDatapoints(cuid, start, end, func, ival))
 						.then(function(received_datapoints) {
 							assert.equal(received_datapoints.length, aggregated_datapoints.length);
 							deleteSensor(newsensor.suid());
