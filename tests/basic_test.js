@@ -28,6 +28,88 @@ describe('Configuration test:', function() {
 	});
 });
 
+describe('Check sensor fields: ', function() {
+	it('should create a sensor with pre-initialized fileds and then read it out from the database', function(done) {
+		this.timeout(10000);
+
+		var newsensor = new ibisense.models.Sensor({
+			name           : "Mocha test sensor",
+            description    : "this is a test sensor that will be deleted after the test run!",
+            latitude       : 60.203381,
+            longitude      : 24.778236,
+            indoor_x_coord : 1.0,
+            indoor_y       : 1.1,
+            indoor_id      : 1,
+            attributes     : {"type": "test"}
+		});
+
+		var createNewSensor = function(newsensor) {
+			var dfd = when.defer();
+			ibisense.sensors.add(newsensor, function(sensor) {
+				dfd.resolve(sensor);
+			}, function(error) {
+				dfd.reject(error);
+			});
+			return dfd.promise;
+		}
+
+		var getCreatedSensor = function(suid) {
+			var dfd = when.defer();
+			ibisense.sensors.get(suid, function(sensor) {
+				dfd.resolve(sensor);
+			}, function(error) {
+				dfd.reject(error);
+			});
+			return dfd.promise;
+		}
+
+		var removeCreatedSensor = function(suid) {
+			var dfd = when.defer();
+			ibisense.sensors.remove(suid, function() {
+				dfd.resolve();
+			}, function(error) {
+				dfd.reject(error);
+			});
+			return dfd.promise;
+		}
+
+		when(createNewSensor(newsensor)).then(function(created_sensor) {
+			try {
+				assert.equal(created_sensor.name(), "Mocha test sensor");
+				assert.equal(created_sensor.isPublic(), false);
+			} catch(error) {
+				removeCreatedSensor(fetched_sensor.suid());
+				done(error);
+			}
+			when(getCreatedSensor(created_sensor.suid())).then(function(fetched_sensor) {
+				try {
+					assert.equal(fetched_sensor.name(), newsensor.name());
+					assert.equal(fetched_sensor.isPublic(), false);
+					assert.equal(fetched_sensor.owner(), process.env.OWNER);
+					assert.equal(fetched_sensor.description(), newsensor.description());
+					assert.equal(fetched_sensor.indoor_location().x, newsensor.indoor_location().x);
+					assert.equal(fetched_sensor.indoor_location().y, newsensor.indoor_location().y);
+					assert.equal(fetched_sensor.indoor_location().id, newsensor.indoor_location().id);
+					assert.equal(fetched_sensor.latitude(), newsensor.latitude());
+					assert.equal(fetched_sensor.longitude(), newsensor.longitude());
+					_.each(fetched_sensor.attributes(), function(value, key) {
+						assert.equal(fetched_sensor.attribute(key), newsensor.attribute(key));
+					});
+					done();
+				} catch (error) {
+					done(error);
+				} finally {
+					removeCreatedSensor(fetched_sensor.suid())
+				}
+			}, function(error) {
+				done(error);	
+			});
+		}, function(error) {
+			done(error);
+		});
+
+	});	
+});
 
 describe('Create, get and update sensor:', function() {
 	it('should properly create, fetch and remove sensor', function(done) {
@@ -80,13 +162,28 @@ describe('Create, get and update sensor:', function() {
 		}
 
 		when(createNewSensor(newsensor)).then(function(created_sensor) {
-			assert.equal(created_sensor.name(), "Mocha test sensor");
-			assert.equal(created_sensor.isPublic(), false);
+			try {
+				assert.equal(created_sensor.name(), "Mocha test sensor");
+				assert.equal(created_sensor.isPublic(), false);
+			} catch(error) {
+				removeCreatedSensor(fetched_sensor.suid());
+				done(error);
+			}
 			when(getCreatedSensor(created_sensor.suid())).then(function(fetched_sensor) {
-				assert.equal(created_sensor.name(), fetched_sensor.name());
-				assert.equal(created_sensor.suid(), fetched_sensor.suid());
+				try {
+					assert.equal(created_sensor.name(), fetched_sensor.name());
+					assert.equal(created_sensor.suid(), fetched_sensor.suid());
+				} catch(error) {
+					removeCreatedSensor(fetched_sensor.suid());
+					done(error);
+				}
 				when(updateCreatedSensor(fetched_sensor)).then(function(updated_sensor) {
-					assert.equal(updated_sensor.isPublic(), true);
+					try {
+						assert.equal(updated_sensor.isPublic(), true);
+					} catch(error) {
+						removeCreatedSensor(fetched_sensor.suid());
+						done(error);
+					}
 					when(removeCreatedSensor(fetched_sensor.suid())).then(function() {
 						done();
 					}, function(error) {
@@ -118,7 +215,12 @@ describe('List sensors:', function() {
 
 		when(listPrivateSensors()).then(function(sensors) {
 			_.each(sensors, function(sensor, index) {
-				assert.equal(sensor.owner(), process.env.OWNER);
+				try {
+					assert.equal(sensor.owner(), process.env.OWNER);
+				} catch(error) {
+					done(error);
+				}
+				
 			});
 			done();
 		}, function(error) {
@@ -215,7 +317,13 @@ describe('Add and get datapoitns:', function() {
 							assert.equal(received_datapoints.length, original_datapoints.length);
 							_.each(received_datapoints, function(dp, i) {
 								var odp = original_datapoints[i];
-								assert.equal(odp.timestampMs(), dp.timestampMs());
+								try {
+									assert.equal(odp.timestampMs(), dp.timestampMs());
+									assert.equal(odp.value(), dp.value());
+								} catch(error) {
+									deleteSensor(fetched_sensor.suid());
+									done(error);
+								}
 							});
 							deleteSensor(newsensor.suid());
 							done();
@@ -356,7 +464,7 @@ describe('Add and get with rollups:', function() {
 		var aggregated_datapoints = aggregate(original_datapoints);
 		var propagation_delay   = 5000; // wait 5 seconds before attempting to read out data
 		var func  = "avg";
-		var ival  = "10sec"; 
+		var ival  = "10s"; 
 
 		when(createNewSensor(newsensor)).then(function(sensor) {
 			newsensor = sensor;
@@ -516,7 +624,7 @@ describe('Add and get with rollups:', function() {
 		var aggregated_datapoints = aggregate(original_datapoints);
 		var propagation_delay     = 5000; // wait 5 seconds before attempting to read out data
 		var func  = "avg";
-		var ival  = "10minutes"; 
+		var ival  = "10min"; 
 
 		when(createNewSensor(newsensor)).then(function(sensor) {
 			newsensor = sensor;
@@ -675,7 +783,7 @@ describe('Add and get with rollups:', function() {
 		var aggregated_datapoints = aggregate(original_datapoints);
 		var propagation_delay     = 5000; // wait 5 seconds before attempting to read out data
 		var func  = "avg";
-		var ival  = "10days"; 
+		var ival  = "10d"; 
 
 		when(createNewSensor(newsensor)).then(function(sensor) {
 			newsensor = sensor;
