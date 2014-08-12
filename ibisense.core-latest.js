@@ -84,7 +84,7 @@ var ibisense = (function () {
                         var jsonObj = JSON.parse(xdr.responseText);
                         status = jsonObj.status;
                     } catch(err) {
-                        console.log(err);
+                        log(err);
                     } finally {
                         if (failure) failure(status);
                         if(always) always();
