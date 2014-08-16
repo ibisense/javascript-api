@@ -34,13 +34,13 @@ describe('Check sensor fields: ', function() {
 
 		var newsensor = new ibisense.models.Sensor({
 			name           : "Mocha test sensor",
-            description    : "this is a test sensor that will be deleted after the test run!",
-            latitude       : 60.203381,
-            longitude      : 24.778236,
-            indoor_x_coord : 1.0,
-            indoor_y       : 1.1,
-            indoor_id      : 1,
-            attributes     : {"type": "test"}
+            		description    : "this is a test sensor that will be deleted after the test run!",
+            		latitude       : 60.203381,
+            		longitude      : 24.778236,
+            		indoor_x       : 1.0,
+            		indoor_y       : 1.1,
+            		indoor_id      : 1,
+            		attributes     : {"type": "test"}
 		});
 
 		var createNewSensor = function(newsensor) {
