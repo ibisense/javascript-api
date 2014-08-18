@@ -37,7 +37,7 @@ describe('Check sensor fields: ', function() {
 			description    : "this is a test sensor that will be deleted after the test run!",
 			latitude       : 60.203381,
 			longitude      : 24.778236,
-			indoor_x_coord : 1.0,
+			indoor_x       : 1.0,
 			indoor_y       : 1.1,
 			indoor_id      : 1,
 			attributes     : {"type": "test"}
