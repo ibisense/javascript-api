@@ -1,0 +1,4 @@
+--timeout 100000
+--reporter list
+--check-leaks
+--colors
