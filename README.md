@@ -19,5 +19,5 @@ either **json2.js** or **json3.js** libraries:
 # Testing
 
 ```
-URL="base url, e.g. https://ibi.io/v1/" API_KEY="YOUR API KEY" OWNER="YOUR USER NAME" mocha --reporter list tests
+URL="base url, e.g. https://ibi.io/v1/" API_KEY="YOUR API KEY" OWNER="YOUR USER NAME" mocha 
 ```
