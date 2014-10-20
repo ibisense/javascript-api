@@ -33,7 +33,7 @@ describe('Check sensor fields: ', function() {
 		this.timeout(10000);
 
 		var newsensor = new ibisense.models.Sensor({
-			SUID           : "override"
+			SUID           : "override",
 			name           : "Mocha test sensor",
 			description    : "this is a test sensor that will be deleted after the test run!",
 			latitude       : 60.203381,
