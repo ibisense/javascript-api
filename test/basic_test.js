@@ -33,6 +33,7 @@ describe('Check sensor fields: ', function() {
 		this.timeout(10000);
 
 		var newsensor = new ibisense.models.Sensor({
+			SUID           : "override"
 			name           : "Mocha test sensor",
 			description    : "this is a test sensor that will be deleted after the test run!",
 			latitude       : 60.203381,
@@ -75,6 +76,7 @@ describe('Check sensor fields: ', function() {
 
 		when(createNewSensor(newsensor)).then(function(created_sensor) {
 			try {
+				assert.notOk(created_sensor.suid(), "override");
 				assert.equal(created_sensor.name(), "Mocha test sensor");
 				assert.equal(created_sensor.isPublic(), false);
 			} catch(error) {
