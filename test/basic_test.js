@@ -32,8 +32,21 @@ describe('Check sensor fields: ', function() {
 	it('should create a sensor with pre-initialized fileds and then read it out from the database', function(done) {
 		this.timeout(10000);
 
+		function randomString() {
+			var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
+			var string_length = 8;
+			var randomstring = '';
+			for (var i=0; i<string_length; i++) {
+				var rnum = Math.floor(Math.random() * chars.length);
+				randomstring += chars.substring(rnum,rnum+1);
+			}
+			return randomstring;
+		}
+
+		var randomSUID = randomString();
+
 		var newsensor = new ibisense.models.Sensor({
-			SUID           : "override",
+			SUID           : randomSUID, //override
 			name           : "Mocha test sensor",
 			description    : "this is a test sensor that will be deleted after the test run!",
 			latitude       : 60.203381,
@@ -76,7 +89,7 @@ describe('Check sensor fields: ', function() {
 
 		when(createNewSensor(newsensor)).then(function(created_sensor) {
 			try {
-				assert.equal(created_sensor.suid(), "override");
+				assert.equal(created_sensor.suid(), randomSUID);
 				assert.equal(created_sensor.name(), "Mocha test sensor");
 				assert.equal(created_sensor.isPublic(), false);
 			} catch(error) {
@@ -99,11 +112,13 @@ describe('Check sensor fields: ', function() {
 					});
 					done();
 				} catch (error) {
+					removeCreatedSensor(randomSUID);
 					done(error);
 				} finally {
-					removeCreatedSensor(fetched_sensor.suid())
+					removeCreatedSensor(randomSUID)
 				}
 			}, function(error) {
+				removeCreatedSensor(randomSUID);
 				done(error);	
 			});
 		}, function(error) {
