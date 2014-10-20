@@ -80,7 +80,7 @@ describe('Check sensor fields: ', function() {
 				assert.equal(created_sensor.name(), "Mocha test sensor");
 				assert.equal(created_sensor.isPublic(), false);
 			} catch(error) {
-				removeCreatedSensor(fetched_sensor.suid());
+				removeCreatedSensor(created_sensor.suid());
 				done(error);
 			}
 			when(getCreatedSensor(created_sensor.suid())).then(function(fetched_sensor) {
