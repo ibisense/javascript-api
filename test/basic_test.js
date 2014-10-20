@@ -76,7 +76,7 @@ describe('Check sensor fields: ', function() {
 
 		when(createNewSensor(newsensor)).then(function(created_sensor) {
 			try {
-				assert.notOk(created_sensor.suid(), "override");
+				assert.equal(created_sensor.suid(), "override");
 				assert.equal(created_sensor.name(), "Mocha test sensor");
 				assert.equal(created_sensor.isPublic(), false);
 			} catch(error) {
