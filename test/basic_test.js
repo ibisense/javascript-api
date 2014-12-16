@@ -459,7 +459,7 @@ describe('Add and get datapoitns:', function() {
 									assert.equal(odp.timestampMs() + offset, dp.timestampMs());
 									assert.equal(odp.value(), dp.value());
 								} catch(error) {
-									deleteSensor(fetched_sensor.suid());
+									deleteSensor(newsensor.suid());
 									done(error);
 								}
 							});
