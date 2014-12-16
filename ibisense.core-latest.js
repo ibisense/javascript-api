@@ -194,7 +194,6 @@ var ibisense = (function () {
                     }
                     xhr.send(data);
                 } catch(e) {
-                    console.log(e);
                     throw e;
                 }
             }
@@ -3681,8 +3680,6 @@ var ibisense = (function () {
                             query["function"] = params["func"];
                         }
                     }
-                    
-                    query["tz"] = params["tz"] || "";
                 }
                     
                 httprequest({
