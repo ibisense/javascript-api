@@ -30,7 +30,9 @@ describe('Configuration test:', function() {
 
 describe('Check sensor fields: ', function() {
 	it('should create a sensor with pre-initialized fileds and then read it out from the database', function(done) {
-		this.timeout(10000);
+		// for first test allow longer timeout as per if the django server has been just started
+		// it can be slow...
+		this.timeout(20000); 
 
 		function randomString() {
 			var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
