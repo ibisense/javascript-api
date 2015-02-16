@@ -248,6 +248,174 @@ describe('List sensors:', function() {
 	});
 });
 
+describe('Filter sensors:', function() {
+	it('should return sensors which pass the filter', function(done) {
+
+		var newsensor = new ibisense.models.Sensor(
+			{
+				'name': 'Mocha test sensor',
+				'attributes':
+				{
+					'type': 'placeholder'
+				}
+			}
+		);
+
+		var createNewSensor = function(newsensor) {
+			var dfd = when.defer();
+			ibisense.sensors.add(newsensor, function(sensor) {
+				dfd.resolve(sensor);
+			}, function(error) {
+				dfd.reject(error);
+			});
+			return dfd.promise;
+		}
+
+		var getCreatedSensor = function(suid) {
+			var dfd = when.defer();
+			ibisense.sensors.get(suid, function(sensor) {
+				dfd.resolve(sensor);
+			}, function(error) {
+				dfd.reject(error);
+			});
+			return dfd.promise;
+		}
+
+		var deleteSensor = function(suid) {
+			ibisense.sensors.remove(suid);
+		}
+
+		var filterSensors = function() {
+			var dfd    = when.defer();
+			var filter = 
+				new ibisense.models.Filter(
+					{
+						'comparator': 'equal', 
+						'key': 'type', 
+						'value': 'placeholder'
+					}
+				);
+
+			ibisense.sensors.filter(filter, function(sensors) {
+				dfd.resolve(sensors);
+			}, function(error) {
+				dfd.reject(error);
+			}, null, true);
+			return dfd.promise;
+		}
+
+		when(createNewSensor(newsensor)).then(function(created_sensor) {
+			newsensor = created_sensor;
+			when(filterSensors()).then(function(sensors) {
+				assert.notEqual(sensors[0].length, 0);
+				assert.equal('Mocha test sensor', sensors[0].name());
+				deleteSensor(newsensor.suid());
+				done();
+			}, function(error) {
+				deleteSensor(newsensor.suid());
+				done(error);
+			});
+		}, function(error) {
+			deleteSensor(newsensor.suid());
+			done(error);
+		});
+	});
+});
+
+
+describe('Filter channels:', function() {
+	it('should return channels which pass the filter', function(done) {
+
+		var newsensor = new ibisense.models.Sensor(
+			{
+				'name': 'Mocha test sensor'
+			}
+		);
+		var newchannel = new ibisense.models.Channel(
+			{
+				'name': 'Mocha channel filtering test',
+				'attributes':
+				{
+					'type': 'temperature'
+				}
+			}
+		);
+
+		var createNewSensor = function(newsensor) {
+			var dfd = when.defer();
+			ibisense.sensors.add(newsensor, function(sensor) {
+				dfd.resolve(sensor);
+			}, function(error) {
+				dfd.reject(error);
+			});
+			return dfd.promise;
+		}
+
+		var getCreatedSensor = function(suid) {
+			var dfd = when.defer();
+			ibisense.sensors.get(suid, function(sensor) {
+				dfd.resolve(sensor);
+			}, function(error) {
+				dfd.reject(error);
+			});
+			return dfd.promise;
+		}
+
+		var createNewChannel = function(suid, newchannel) {
+			var dfd = when.defer();
+			ibisense.channels.add(suid, newchannel, function(channel) {
+				dfd.resolve(channel);
+			}, function(error) {
+				dfd.reject(error);
+			});
+			return dfd.promise;
+		}
+
+		var deleteSensor = function(suid) {
+			ibisense.sensors.remove(suid);
+		}
+
+		var filterTemperatureChannels = function() {
+			var dfd    = when.defer();
+			var filter = 
+				new ibisense.models.Filter(
+					{
+						'comparator': 'equal', 
+						'key': 'type', 
+						'value': 'temperature'
+					}
+				);
+			ibisense.channels.getByAttribute('type', 'temperature', function(sensor) {
+				dfd.resolve(sensor);
+			}, function(error) {
+				dfd.reject(error);
+			}, null, true);
+			return dfd.promise;
+		}
+
+		when(createNewSensor(newsensor)).then(function(created_sensor) {
+			newsensor = created_sensor;
+			when(createNewChannel(created_sensor.suid(), newchannel)).then(function(channel) {
+				when(filterTemperatureChannels()).then(function(channels) {
+					var soughtChannel = channels[0];
+					assert.equal("Mocha channel filtering test", soughtChannel.name());
+					deleteSensor(newsensor.suid());
+					done();
+				}, function(error) {
+					deleteSensor(newsensor.suid());
+					done(error);
+				});
+			}, function(error) {
+				deleteSensor(newsensor.suid());
+				done(error);
+			});
+		}, function(error) {
+			deleteSensor(newsensor.suid());
+			done(error);
+		});
+	});
+});
+
 describe('Add and get datapoitns:', function() {
 	it('should correctly create sensor, create channel, insert and read out datapoints and delete sensor', function(done) {
 		this.timeout(60000);
